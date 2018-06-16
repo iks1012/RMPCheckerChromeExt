@@ -1,0 +1,11 @@
+{
+	"name":"RMP Checker",
+	"description" : "Display's Professor's RMP (Rate My Professor) rating next to their name on solar before you enroll in a class so you don't get yourself in a mess!!" ,
+	"version" : "1.0",
+	"manifest_version" : 2,
+	"content_scripts" : [
+		{
+			"matches" : []
+		}
+	]
+}
