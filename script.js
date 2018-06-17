@@ -33,7 +33,11 @@ function callback(mutationList, observer) {
 			//this is the type of change we care about...
 
 			var teacherNames = getTeacherName();
-			getRatingsforEachTeacher(teacherNames);
+			var ratings = getRatingsforEachTeacher(teacherNames);
+			if(namesFound){ //then the rating must exist by now
+				//update the html
+			}
+
 			break;
 		case 'attributes':
 			break;
@@ -51,7 +55,6 @@ function getTeacherName(){
 		for (var i = names.length - 1; i >= 0; i--) {
 			names[i] = spanList[i].innerHTML;
 		}
-		//console.log(names);
 	}
 
 	return names;
@@ -65,9 +68,12 @@ function getRatingsforEachTeacher(names){
 		//send the get requests and get each of the urls of each of the profs
 		urls = getProfPageURLs(urls);
 
-		
+		var ratings = getRatingsFromURLs(urls);
 
 
+	}
+	else{
+		return array
 	}
 }
 
@@ -75,7 +81,6 @@ function generateProfQueryURLs(names){
 	var urls = new Array(names.length);
 	for(var i = 0; i < names.length; i++){
 		if(names[i] != 'Staff'){
-			index = i;
 			var firstName = names[i].substring(0, names[i].indexOf(" "));
 			var lastName = names[i].substring(names[i].indexOf(" ")+1);
 			var url = 'https://www.ratemyprofessors.com/search.jsp?query='+firstName+'+'+lastName+'+Stony+Brook';
@@ -90,23 +95,45 @@ function generateProfQueryURLs(names){
 }
 
 function getProfPageURLs(urls){
-	var searchResultResponses = new Array(urls.length);
-	for(var i = 0; i < names.length; i ++){
+	var searchResultResponse = "";
+	for(var i = 0; i < urls.length; i ++){
 		if(urls[i] != 'Staff'){
-			searchResultResponses[i] = get(urls[i]);
-			var tidIndex = searchResultResponses[i].indexOf("tid");
-			var tidStart = searchResultResponses[i].indexOf("=", tidIndex)+1;
-			var tidEnd = searchResultResponses[i].indexOf("\"", tidIndex);
-			var tid = parseInt(searchResultResponses[i].substring(tidStart, tidEnd));
+			searchResultResponse = get(urls[i]);
+			var tidIndex = searchResultResponse.indexOf("tid");
+			var tidStart = searchResultResponse.indexOf("=", tidIndex)+1;
+			var tidEnd = searchResultResponse.indexOf("\"", tidIndex);
+			var tid = parseInt(searchResultResponse.substring(tidStart, tidEnd));
 
 			//update the corresponding URLs
-			urls[i] =  "http://www.ratemyprofessors.com/ShowRatings.jsp?tid="+tid;
+			urls[i] =  "https://www.ratemyprofessors.com/ShowRatings.jsp?tid="+tid;
 		}
 		else{
-			searchResultResponses[i] = 'Staff';
+			searchResultResponse = 'Staff';
 		}
 	}
 	return urls;
+}
+
+function getRatingsFromURLs(urls){
+	var ratings = new Array(urls.length);
+	var response = "";
+	for(var i = 0; i < urls.length; i++){
+
+		if(urls[i] != 'Staff'){
+			//Process the get
+			response = get(urls[i]);
+			ratings[i] = parseFloat(response.substring( (response.indexOf('<div class=\"grade\" title=\"\">')+'<div class=\"grade\" title=\"\">'.length) , //to
+				response.indexOf('</div>', response.indexOf('<div class=\"grade\" title=\"\">')))); //this
+
+		}
+		else{
+			ratings[i] = "N/A";
+		}
+
+	}
+
+	console.log(ratings);
+	return ratings;
 }
 
 function get(url){
