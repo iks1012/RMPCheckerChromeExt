@@ -50,7 +50,6 @@ function getTeacherName(){
 		var names = new Array(spanList.length);
 		for (var i = names.length - 1; i >= 0; i--) {
 			names[i] = spanList[i].innerHTML;
-			spanList[i].innerHTML = 'Ishan Sethi';
 		}
 		console.log(names);
 	}
@@ -63,12 +62,14 @@ function getTeacherName(){
 function getRatingsforEachTeacher(names){
 	if(namesFound){
 
-		for(var i = 0; i < names.length){
+		for(var i = 0; i < names.length; i++){
 			if(names[i] != 'Staff'){
 				var firstName = names[i].substring(0, names[i].indexOf(" "));
 				var lastName = names[i].substring(names[i].indexOf(" ")+1);
-				var url = 'http://www.ratemyprofessors.com/search.jsp?query='+firstName+'+'+lastName+'+Stony+Brook';
-				var response = httpGET(url);
+				var url = 'https://www.ratemyprofessors.com/search.jsp?query='+firstName+'+'+lastName+'+Stony+Brook';
+				var response = httpGet(url);
+
+				console.log(response);
 			}
 
 		}
@@ -90,6 +91,8 @@ function httpGetHelper(theUrl){
     xmlHttp.onreadystatechange = function() { 
         if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
             httpGetResponse = xmlHttp.responseText;
+        else
+        	console.log(xmlHttp.statusText);
     }
     xmlHttp.open("GET", theUrl, true); // true for asynchronous 
     xmlHttp.send(null);
