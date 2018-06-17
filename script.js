@@ -54,6 +54,7 @@ function getTeacherName(){
 		var names = new Array(spanList.length);
 		for (var i = names.length - 1; i >= 0; i--) {
 			names[i] = spanList[i].innerHTML;
+
 		}
 	}
 
@@ -65,10 +66,10 @@ function getRatingsforEachTeacher(names){
 		//get the urls to look up each prof from thier names
 		var urls = generateProfQueryURLs(names);
 
-		//send the get requests and get each of the urls of each of the profs
-		urls = getProfPageURLs(urls);
+		//send the get requests and parse JSON objects
+		var jsonObjects = parseToJSONObjects(urls);
 
-		var ratings = getRatingsFromURLs(urls);
+		var ratings = getRatingsFromJSONObjects(jsonObjects);
 
 
 	}
@@ -83,7 +84,7 @@ function generateProfQueryURLs(names){
 		if(names[i] != 'Staff'){
 			var firstName = names[i].substring(0, names[i].indexOf(" "));
 			var lastName = names[i].substring(names[i].indexOf(" ")+1);
-			var url = 'https://www.ratemyprofessors.com/search.jsp?query='+firstName+'+'+lastName+'+Stony+Brook';
+			var url = 'https://search-a.akamaihd.net/typeahead/suggest/?q='+firstName+'%20'+lastName+'%20stony%20brook&defType=edismax&qf=teacherfirstname_t%5E2000%20teacherlastname_t%5E2000%20teacherfullname_t%5E2000%20autosuggest&siteName=rmp&rows=20&fl=pk_id%20teacherfirstname_t%20teacherlastname_t%20total_number_of_ratings_i%20averageratingscore_rf'
 			urls[i] = url;
 		}
 		else{
@@ -94,37 +95,27 @@ function generateProfQueryURLs(names){
 	return urls;
 }
 
-function getProfPageURLs(urls){
-	var searchResultResponse = "";
+function parseToJSONObjects(urls){
+	var jsonObjects = new Array(urls.length);
 	for(var i = 0; i < urls.length; i ++){
 		if(urls[i] != 'Staff'){
-			searchResultResponse = get(urls[i]);
-			var tidIndex = searchResultResponse.indexOf("tid");
-			var tidStart = searchResultResponse.indexOf("=", tidIndex)+1;
-			var tidEnd = searchResultResponse.indexOf("\"", tidIndex);
-			var tid = parseInt(searchResultResponse.substring(tidStart, tidEnd));
-
-			//update the corresponding URLs
-			urls[i] =  "https://www.ratemyprofessors.com/ShowRatings.jsp?tid="+tid;
+			jsonObjects[i] = JSON.parse(get(urls[i]));
 		}
 		else{
-			searchResultResponse = 'Staff';
+			jsonObjects[i] = 'Staff';
 		}
 	}
-	return urls;
+	return jsonObjects;
 }
 
-function getRatingsFromURLs(urls){
-	var ratings = new Array(urls.length);
+function getRatingsFromJSONObjects(jsons){
+	var ratings = new Array(jsons.length);
 	var response = "";
-	for(var i = 0; i < urls.length; i++){
+	for(var i = 0; i < jsons.length; i++){
 
-		if(urls[i] != 'Staff'){
-			//Process the get
-			response = get(urls[i]);
-			ratings[i] = parseFloat(response.substring( (response.indexOf('<div class=\"grade\" title=\"\">')+'<div class=\"grade\" title=\"\">'.length) , //to
-				response.indexOf('</div>', response.indexOf('<div class=\"grade\" title=\"\">')))); //this
-
+		if(jsons[i] != 'Staff'){
+			//Process the JSON to get rating
+			console.log(jsons[i].response.docs[0].averageratingscore_rf);
 		}
 		else{
 			ratings[i] = "N/A";
