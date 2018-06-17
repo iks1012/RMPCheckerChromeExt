@@ -2,7 +2,7 @@
 
 
 
-
+var i = 0;
 var observerOptions = {
   childList: true,
   attributes: true,
@@ -24,7 +24,21 @@ window.onload = function () {
 
 
 function callback(mutationList, observer) {
-	console.log("Iframe Changed!");
+	mutationList.forEach((mutation) => {
+		switch(mutation.type) {
+		case 'childList':
+			//this is the type of change we care about...
+
+			break;
+		case 'attributes':
+			break;
+		}
+	});
+}
+
+function getTeacherName(){
 	
 }
+
+
 
