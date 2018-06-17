@@ -1,43 +1,12 @@
 
 
 
-
-var i = 0;
-var observerOptions = {
-  childList: true,
-  attributes: true,
-  subtree: true, //Omit or set to false to observe only changes to the parent node.
-  characterData: true 
-}
-
-var observer = new MutationObserver(callback);
-
-
-
-
+//when the page loads, set up the change detection on the correct Node (targetNode).
 window.onload = function () {
-	var targetNode = document.getElementById('ptifrmtgtframe').contentDocument.childNodes[1];
-	observer.observe(targetNode, observerOptions);
-	console.log(targetNode);
-}
 
-
-
-function callback(mutationList, observer) {
-	mutationList.forEach((mutation) => {
-		switch(mutation.type) {
-		case 'childList':
-			//this is the type of change we care about...
-
-			break;
-		case 'attributes':
-			break;
-		}
-	});
-}
-
-function getTeacherName(){
-	
+	var front_page = document.getElementById('front-page-content').childNodes[2].childNodes[2].childNodes[3].childNodes[0].childNodes[1].childNodes[3];
+	console.log(front_page);
+	console.log(front_page.rows.item(2).innerHTML);
 }
 
 

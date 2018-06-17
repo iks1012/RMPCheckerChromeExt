@@ -1,12 +1,12 @@
 {
 	"name":"RMP Checker",
-	"description" : "Display's Professor's RMP (Rate My Professor) rating next to their name on solar before you enroll in a class so you don't get yourself in a mess!!" ,
+	"description" : "Display's Professor's RMP (Rate My Professor) rating next to their name on schedule builder before you enroll in a class so you don't get yourself in a mess!!" ,
 	"version" : "1.0",
 	"manifest_version" : 2,
 	"content_scripts" : [
 		{
-			"matches" : ["https://psns.cc.stonybrook.edu/psp/csprods/EMPLOYEE/CAMP/c/*"],
-			"js" : ["script.js"],
+			"matches" : ["https://stonybrook.collegescheduler.com/terms/*"],
+			"js" : ["jquery.min.js", "script.js"],
 			"all_frames": true
 		}
 	],
