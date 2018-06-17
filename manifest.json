@@ -5,7 +5,15 @@
 	"manifest_version" : 2,
 	"content_scripts" : [
 		{
-			"matches" : []
+			"matches" : ["https://psns.cc.stonybrook.edu/psp/csprods/EMPLOYEE/CAMP/c/*"],
+			"js" : ["script.js"],
+			"all_frames": true
 		}
-	]
+	],
+	"permissions": [
+    	"tabs",
+    	"activeTab",
+    	"http://*/*",
+    	"https://*/*"
+ 	]
 }
